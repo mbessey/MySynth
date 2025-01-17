@@ -64,16 +64,6 @@ class WaveTable {
     }
   }
 
-  void DumpWave() {
-    for (int i = 0; i < num_samples; i++) {
-      float mine = Process();
-      for (int j =0; j < 10; j++) {
-        Process();
-      }
-      Serial.print("mine:");
-      Serial.println(mine);
-    }
-  }
   private:
   static const int num_samples = 256;
   float _sr;

@@ -10,10 +10,16 @@ static WaveTable waveTable;
 static Oscillator osc;
 static float sample_rate, callback_rate;
 static int wave;
+static bool use_mine;
 
 float NextSample() {
   float ad_out = ad.Process();
-  float sig = waveTable.Process();
+  float sig;
+  if (use_mine) {
+    sig = waveTable.Process();
+  } else {
+    sig = osc.Process();
+  }
   // sig = flt.Process(sig);
   sig *= ad_out;
   return sig;
@@ -112,6 +118,24 @@ void loop() {
   // put your main code here, to run repeatedly:
   // nothing here - Daisy does it all in the Daisy callback...
   if (pod.encoder.RisingEdge()) {
-    waveTable.DumpWave();
+    waveTable.Reset();
+    osc.Reset();
+    DumpWaves();
   }
 }
+
+void DumpWaves() {
+  for (int i = 0; i < 50; i++) {
+    float mine = waveTable.Process();
+    float theirs = osc.Process();
+    for (int j =0; j < 10; j++) {
+      waveTable.Process();
+      osc.Process();
+    }
+    Serial.print("oscillator:");
+    Serial.print(theirs);
+    Serial.print(", wavetable:");
+    Serial.println(mine);
+  }
+}
+
