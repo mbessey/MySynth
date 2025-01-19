@@ -26,9 +26,9 @@
     static const int num_samples = 256;
     float _sr;
     uint8_t sample[num_samples];
-    int _index;
-    int _step;
+    int _sample;
     float _amp = 1.0;
+    float _freq = 110;
     void SetSinWave();
     void SetTriWave();
     void SetSawWave();

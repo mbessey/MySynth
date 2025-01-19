@@ -2,8 +2,13 @@
 #include "WaveTable.h"
 
 float WaveTable::Process() {
-  float val = (sample[_index] - 127.0)/128.0;
-  _index = (_index + _step) % num_samples;
+  // to figure out where you are in the waveform:
+  // total sample count / sample rate == time
+  // each run through the table is one wave, so 
+  // time * freq = number of cycles
+  // (cycles * 256) % 256 = position in cycle
+  int index = (int)floor((_sample++ / _sr) * _freq * num_samples) % 256;
+  float val = (sample[index] - 127.0)/128.0;
   return val * _amp;
 }
 
@@ -17,13 +22,12 @@ WaveTable::~WaveTable() {
 
 void WaveTable::Init(float sample_rate) {
   _sr = sample_rate;
-  _index = 0;
-  _step = 1;
+  _sample = 0;
   SetSinWave();
 }
 
 void WaveTable::Reset() {
-  _index = 0;
+  _sample = 0;
 }
 
 void WaveTable::SetAmp(float a) {
@@ -31,7 +35,7 @@ void WaveTable::SetAmp(float a) {
 }
 
 void WaveTable::SetFreq(const float freq) {
-  _step = num_samples / (_sr / freq);
+  _freq = freq;
 }
 
 void WaveTable::SetWaveform(int w) {
